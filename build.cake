@@ -38,10 +38,11 @@ var isWindows                       = IsRunningOnWindows();
 
 // For GitHub release
 var owner                           = "icarus-consulting";
-var repository                      = "Yaapii.Pulse"; // e.g. Yaapii.Http
+var repository                      = "Yaapii.Pulse";
 
 // For AppVeyor NuGetFeed
-var nuGetSource = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
+var nuGetSource             = "https://api.nuget.org/v3/index.json";
+var appVeyorNuGetFeed       = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
 
 // API key tokens for deployment
 var gitHubToken                     = "";
@@ -162,9 +163,11 @@ Task("Test")
 ///////////////////////////////////////////////////////////////////////////////
 // Nuget
 ///////////////////////////////////////////////////////////////////////////////
-Task("Nuget")
-.IsDependentOn("Clean")
+Task("NuGet")
 .IsDependentOn("Version")
+.IsDependentOn("Clean")
+.IsDependentOn("Restore")
+.IsDependentOn("Build")
 .Does(() =>
 {
     Information(Figlet("NuGet"));
@@ -196,41 +199,6 @@ Task("Nuget")
 	}
 });
 
-///////////////////////////////////////////////////////////////////////////////
-// Code Coverage
-///////////////////////////////////////////////////////////////////////////////
-Task("GenerateCoverage")
-.IsDependentOn("Build")
-.Does(() =>
-{
-    Information(Figlet("GenerateCoverage"));
-
-    try
-    {
-        OpenCover(
-            tool =>
-            {
-                tool.DotNetCoreTest(
-                    "testProjectFolder",
-                    new DotNetCoreTestSettings
-                    {
-                        Configuration = "Release"
-                    }
-                );
-            },
-            new FilePath("./coverage.xml"),
-            new OpenCoverSettings()
-            {
-                OldStyle = true
-            }
-            .WithFilter("+[Yaapii.Atoms]*")
-        );
-    }
-    catch(Exception ex)
-    {
-        Information("Error: " + ex.ToString());
-    }
-});
 
 ///////////////////////////////////////////////////////////////////////////////
 // Credentials
@@ -240,23 +208,22 @@ Task("Credentials")
 .Does(() =>
 {
     Information(Figlet("Credentials"));
-
-	gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
-	appVeyorToken = EnvironmentVariable("APPVEYOR_TOKEN");
-});
-
-///////////////////////////////////////////////////////////////////////////////
-// UploadCoverage
-///////////////////////////////////////////////////////////////////////////////
-Task("UploadCoverage")
-.IsDependentOn("GenerateCoverage")
-.IsDependentOn("Credentials")
-.WithCriteria(() => isAppVeyor)
-.Does(() =>
-{
-    Information(Figlet("UploadCoverage"));
-
-    Codecov("coverage.xml", codecovToken);
+    
+    gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
+    if (string.IsNullOrEmpty(gitHubToken))
+    {
+        throw new Exception("Environment variable 'GITHUB_TOKEN' is not set");
+    }
+    nugetReleaseToken = EnvironmentVariable("NUGET_TOKEN");
+    if (string.IsNullOrEmpty(nugetReleaseToken))
+    {
+        throw new Exception("Environment variable 'NUGET_TOKEN' is not set");
+    }
+    appVeyorFeedToken = EnvironmentVariable("APPVEYOR_TOKEN");
+    if (string.IsNullOrEmpty(appVeyorFeedToken))
+    {
+        throw new Exception("Environment variable 'APPVEYOR_TOKEN' is not set");
+    }
 });
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -317,7 +284,7 @@ Task("NuGetFeed")
                 package,
                 new NuGetPushSettings {
                     Source = nuGetSource,
-                    ApiKey = appVeyorToken
+                    ApiKey = nugetReleaseToken
                 }
             );
         }
