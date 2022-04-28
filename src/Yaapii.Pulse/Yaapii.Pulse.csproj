@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <VersionPrefix>1.0.2</VersionPrefix>
+    <Authors>ICARUS Consulting GmbH</Authors>
+    <Copyright>ICARUS Consulting GmbH</Copyright>
+    <Description>A library for object oriented event handling.</Description>
+    <RepositoryUrl>https://github.com/icarus-consulting/Yaapii.Pulse</RepositoryUrl>
+    <PackageTags>yaapii, pulse</PackageTags>
+    <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Pulse</PackageProjectUrl>
+    <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Pulse/releases</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Yaapii.Atoms" Version="2.1.3" />
+    <PackageReference Include="Yaapii.JSON" Version="13.0.0" />
+  </ItemGroup>
+
+</Project>
