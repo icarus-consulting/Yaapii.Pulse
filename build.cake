@@ -45,9 +45,9 @@ var nuGetSource             = "https://api.nuget.org/v3/index.json";
 var appVeyorNuGetFeed       = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
 
 // API key tokens for deployment
-var gitHubToken                     = "";
-var appVeyorToken                   = "";
-var codecovToken                    = "";
+var gitHubToken             = "";
+var nugetReleaseToken       = "";
+var appVeyorFeedToken       = "";
 
 ///////////////////////////////////////////////////////////////////////////////
 // Clean
@@ -301,9 +301,7 @@ Task("Default")
 .IsDependentOn("Build")
 .IsDependentOn("Test")
 .IsDependentOn("Nuget")
-.IsDependentOn("GenerateCoverage")
 .IsDependentOn("Credentials")
-.IsDependentOn("UploadCoverage")
 .IsDependentOn("GitHubRelease")
 .IsDependentOn("NuGetFeed")
 ;
