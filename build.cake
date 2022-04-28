@@ -246,7 +246,7 @@ Task("GitHubRelease")
             Milestone         = version,
             Name              = version,
             Prerelease        = false,
-            TargetCommitish   = "master"
+            TargetCommitish   = "main"
         }
     );
 
