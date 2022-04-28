@@ -1,4 +1,4 @@
-#tool nuget:?package=GitReleaseManager=GitReleaseManager&version=0.11.0
+#tool nuget:?package=GitReleaseManager&version=0.11.0
 #tool nuget:?package=OpenCover
 #tool nuget:?package=Codecov
 #addin "Cake.Figlet"
