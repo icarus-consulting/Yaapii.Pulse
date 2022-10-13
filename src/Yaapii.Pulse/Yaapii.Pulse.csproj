@@ -13,6 +13,8 @@
     <PackageTags>yaapii, pulse</PackageTags>
     <PackageProjectUrl>https://github.com/icarus-consulting/Yaapii.Pulse</PackageProjectUrl>
     <PackageReleaseNotes>https://github.com/icarus-consulting/Yaapii.Pulse/releases</PackageReleaseNotes>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\sgKey.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
