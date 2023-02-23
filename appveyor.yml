@@ -5,8 +5,6 @@ version: "{build}"
 image: Visual Studio 2019
 configuration: Release
 environment:
-  GITHUB_TOKEN:
-    secure: //RzPD6sJwALrAUPet5ffD2C82ETjhYb1XR30sWRHtqNK5E9Q9xN96GNP9OfWCwX
   NUGET_TOKEN:
     secure: 9aUJFQIpYPG5nx8sJVYvt3qD245/7GYT9LVf1TUtotED6EfrVbQVSBXAJ3RaeeKp
   APPVEYOR_TOKEN:
