@@ -1,4 +1,3 @@
-#tool nuget:?package=GitReleaseManager&version=0.11
 #tool nuget:?package=OpenCover
 #tool nuget:?package=Codecov
 #addin "Cake.Figlet"
@@ -45,7 +44,6 @@ var nuGetSource             = "https://api.nuget.org/v3/index.json";
 var appVeyorNuGetFeed       = "https://ci.appveyor.com/nuget/icarus/api/v2/package";
 
 // API key tokens for deployment
-var gitHubToken             = "";
 var nugetReleaseToken       = "";
 var appVeyorFeedToken       = "";
 
@@ -209,11 +207,6 @@ Task("Credentials")
 {
     Information(Figlet("Credentials"));
     
-    gitHubToken = EnvironmentVariable("GITHUB_TOKEN");
-    if (string.IsNullOrEmpty(gitHubToken))
-    {
-        throw new Exception("Environment variable 'GITHUB_TOKEN' is not set");
-    }
     nugetReleaseToken = EnvironmentVariable("NUGET_TOKEN");
     if (string.IsNullOrEmpty(nugetReleaseToken))
     {
@@ -226,44 +219,6 @@ Task("Credentials")
     }
 });
 
-///////////////////////////////////////////////////////////////////////////////
-// GitHubRelease
-///////////////////////////////////////////////////////////////////////////////
-Task("GitHubRelease")
-.WithCriteria(() => isAppVeyor && BuildSystem.AppVeyor.Environment.Repository.Tag.IsTag)
-.IsDependentOn("Nuget")
-.IsDependentOn("Version")
-.IsDependentOn("Credentials")
-.Does(() =>
-{
-    Information(Figlet("GitHub Release"));
-
-    GitReleaseManagerCreate(
-        gitHubToken,
-        owner,
-        repository,
-        new GitReleaseManagerCreateSettings {
-            Milestone         = version,
-            Name              = version,
-            Prerelease        = false,
-            TargetCommitish   = "main"
-        }
-    );
-
-    // Collect here all files you need for the release on GitHub
-    // e.g. you can zip the whole artifacts folder deploy the zip
-    // here you see an expample to deploy all nuget packages in the root of the artifacts folder:
-    var nugets = string.Join(",", GetFiles("./artifacts/*.nupkg").Select(f => f.FullPath) );
-    Information($"Release files:{Environment.NewLine}  " + nugets.Replace(",", $"{Environment.NewLine}  "));
-    /*GitReleaseManagerAddAssets(
-        gitHubToken,
-        owner,
-        repository,
-        version,
-        nugets
-    );*/
-    GitReleaseManagerPublish(gitHubToken, owner, repository, version);
-});
 
 ///////////////////////////////////////////////////////////////////////////////
 // NuGetFeed
@@ -302,7 +257,6 @@ Task("Default")
 .IsDependentOn("Test")
 .IsDependentOn("Nuget")
 .IsDependentOn("Credentials")
-.IsDependentOn("GitHubRelease")
 .IsDependentOn("NuGetFeed")
 ;
 
