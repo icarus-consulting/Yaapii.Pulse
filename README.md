@@ -1,3 +1,7 @@
+## Repo Guidelines
+
+Mainly responsible for this repository is [kpe42](https://github.com/kpe42).
+
 # Yaapii.Pulse
 
 A library for object oriented event handling.
