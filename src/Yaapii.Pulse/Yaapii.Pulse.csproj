@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Version>3.0.0</Version>
+    <UseProjectReferences>False</UseProjectReferences>
   </PropertyGroup>
   <PropertyGroup>
     <VersionPrefix>1.0.2</VersionPrefix>
@@ -17,7 +18,7 @@
   </PropertyGroup>
   <ItemGroup></ItemGroup>
   <Choose>
-    <When Condition="'$(Configuration)'=='Release'">
+    <When Condition="'$(UseProjectReferences)'=='True'">
       <ItemGroup>
         <ProjectReference Include="..\..\..\Yaapii.JSON\src\Yaapii.JSON\Yaapii.JSON.csproj" />
       </ItemGroup>
